@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <link rel="shortcut icon" href="{{url_for('static', filename='img/favicon.ico')}}" type="image/x-icon"> 
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block refresh %}{% endblock %}
+        <title>Pocket Rocket</title>
+        <!-- Bootstrap -->
+        <script src="https://unpkg.com/popper.js"></script>
+        <!-- <link href="static/css/bootstrap.min.css" rel="stylesheet"> -->
+        <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <!-- <script src="static/js/bootstrap.min.js"></script> -->
+        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <!-- Icons -->
+        <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+        <!-- Plotter -->
+        <script src="https://d3js.org/d3.v3.min.js"></script>
+        <script src="https://mauriciopoppe.github.io/function-plot/js/function-plot.js"></script>
+        <div>
+            <style>
+                    #small{
+                        display: none;
+                    }
+                    @media only screen and (max-width: 500px) {
+                    #big{
+                        display: none;
+                    }
+                    #small{
+                        display: inline;
+                    }
+                }
+            </style>
+            {% block style %}{% endblock %}
+        </div>
+    </head>
+    <body>
+        <header class="site-header">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a id="big" class="navbar-brand" href="{{url_for('index')}}">
+                    <img src="{{url_for('static', filename='img/Logo_rocket.png')}}" width="35" height="35" style="border-radius: 50%" class="d-inline-block align-top" alt="Logo">
+                    <text class="ml-2" id="two">Pocket Rocket</text>
+                </a>
+                <a id="small" class="navbar-brand" href="{{url_for('index')}}">
+                    <img id="small" src="{{url_for('static', filename='img/Logo_rocket.png')}}" width="70" height="65" style="border-radius: 20%"class="d-inline-block align-top" alt="Logo">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{url_for('grapher')}}">Grapher <span class="sr-only">(current)</span></a>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Root Algorithms
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('incremental_search') }}">Incremental Search</a>
+                        <a class="dropdown-item" href="{{ url_for('bisection') }}">Bisection</a>
+                        <a class="dropdown-item" href="{{ url_for('false_position') }}">False Position</a>
+                        <a class="dropdown-item" href="{{ url_for('fixed_point') }}">Fixed Point</a>
+                        <a class="dropdown-item" href="{{ url_for('secant') }}">Secant</a>
+                        <a class="dropdown-item" href="{{ url_for('newton') }}">Newton</a>
+                        <a class="dropdown-item" href="{{ url_for('multiple_roots') }}">Multiple Roots</a>
+                        <a class="dropdown-item" href="{{ url_for('aitken') }}">Aitken</a>
+                        <a class="dropdown-item" href="{{ url_for('muller') }}">Muller</a>
+                        <a class="dropdown-item" href="{{ url_for('steffenson') }}">Steffenson</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Matrix Calculator
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('gauss_simple') }}">Gauss Elimination</a>
+                        <a class="dropdown-item" href="{{ url_for('gauss_totalpivot') }}">Gauss Total Pivot</a>
+                        <a class="dropdown-item" href="{{ url_for('gauss_partialpivot') }}">Gauss Partial Pivot</a>
+                        <a class="dropdown-item" href="{{ url_for('lu_simple_gaussian') }}">LU Factorization</a>
+                        <a class="dropdown-item" href="{{ url_for('lu_pivoting') }}">PA=LU Factorization</a>
+                        <a class="dropdown-item" href="{{ url_for('lucholeskypivoting') }}">Cholesky</a>
+                        <a class="dropdown-item" href="{{ url_for('crout') }}">Crout</a>
+                        <a class="dropdown-item" href="{{ url_for('doolittle') }}">Doolittle</a>
+                        <a class="dropdown-item" href="{{ url_for('jacobi') }}">Jacobi</a>
+                        <a class="dropdown-item" href="{{ url_for('gauss_seidel') }}">Gauss-Seidel</a>
+                        <a class="dropdown-item" href="{{ url_for('sor') }}">SOR</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Interpolation
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{{ url_for('lagrange') }}">LaGrange Polynomial</a>
+                        <a class="dropdown-item" href="{{ url_for('newton_interpolation') }}">Newton Polynomial</a>
+                        <a class="dropdown-item" href="{{ url_for('vandermorde') }}">Vandermonde Polynomial</a>
+                        <a class="dropdown-item" href="{{ url_for('splines') }}">Splines</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://en.wikipedia.org/wiki/List_of_numerical_analysis_topics">Documentation</a>
+                    </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <main role="main" class="container">
+        <!-- <div class="container-fluid"> -->
+            <br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                            <strong><p>{{ message }}</p></strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            {% block body %}{% endblock %}
+        <!-- </div> -->
+    </main>
+        <script>
+            feather.replace()
+        </script>
+    </body>
+    <footer>
+        <br><br>
+        <div class="text-center">
+            <small class="text-muted">Super powered numerical analysis.</small>
+        </div>     
+    </footer>
+</html>

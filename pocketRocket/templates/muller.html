@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+
+{% block refresh %}
+
+{% endblock %}
+
+{% block style%}
+
+{% endblock %}
+
+{% block body %}
+<body class="text-center">
+    <div class="fluid-container">
+        <div class="row">
+            <div class="col-md-3 col-sm-3">
+                <br><br>
+                <legend class="border-bottom mb-4">Muller</legend>
+                <form action="{{ url_for('muller') }}" method="post">
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.function.label }} {{ form.function(id="function", oninput="plot();",class="form-control",size=32) }}
+                            <small class="text-muted">
+                                {{'Use exp for euler function.'}}
+                            </small><br>
+                        </p>
+                        <p>
+                            {{ form.x_0.label }} {{ form.x_0(class="form-control",size=32) }}
+                        </p>
+                        <p>
+                            {{ form.x_1.label }} {{ form.x_1(class="form-control",size=32) }}
+                        </p>
+                        <p>
+                            {{ form.x_2.label }}
+                            {{ form.x_2(class="form-control", placeholder="1e-5", size=32)}}
+                        </p>
+                        <p>{{ form.calculate(class="btn btn-primary btn-block") }}</p>
+                    </form>
+
+                    <div class="container">
+                        <a href="#" 
+                            title="How to Fill Data" 
+                            data-toggle="popover" 
+                            data-trigger="hover" 
+                            data-content="Function ex: exp(x)+2 <br /> a=integer ex: 0 <br /> b=integer ex: 1<br /> nmax=integer ex: 100 <br />tol=integer ex: 1e-7"
+                            data-html="true">Help
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-9 col-sm-9">
+                    <p> {{ form.result.label }} </p>
+                        <div class="table-responsive">
+                                <table id="resultTable" class="table table-sm table-striped table-bordered table-hover table-condensed">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>Root</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ form.result.data }} </td>
+                                            </tr>
+                                        </tbody>
+                            </table>
+                            <button class="btn btn-primary" onclick="exportTableToCSV('result_bisection.csv')" style="float:right">Export</button>
+                            <button class="btn btn-primary" title="Results" data-toggle="popover" data-trigger="hover" data-content="{{message}}" style="float:left">Results</button>
+                        </div>
+                        <section id="plot">
+                                <input type=number id="xMin" style="display:none;" value=-10 step=0.5 oninput="plot();">
+                                <input type=number id="xMax" style="display:none;" value=10 step=0.5 oninput="plot();">
+                                <input type=number id="yMin" style="display:none;" value=-10 step=0.5 oninput="plot();">
+                                <input type=number id="yMax" style="display:none;" value=10 step=0.5 oninput="plot();">
+                                <input type=color id="color" style="display:none;" onchange="plot();">
+                                <div id="myFunction"></div>
+                                <p>
+                                    <button class="btn btn-danger" id="hide" style="display: block-inline;" onclick="hidePlot();">Hide</button>
+                                    <button class="btn btn-info" id="show" style="display: none;" onclick="showPlot();">Show</button>
+                                </p>   
+                            </section>
+                    </div>
+                </div>
+            </div>
+    </body>
+
+
+
+    <script src="{{url_for('static', filename='js/plotter.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="popover"]').popover();   
+        });
+        function downloadCSV(csv, filename) {
+            var csvFile;
+            var downloadLink;
+                // CSV file
+            csvFile = new Blob([csv], {type: "text/csv"});
+            // Download link
+            downloadLink = document.createElement("a");
+            // File name
+            downloadLink.download = filename;
+            // Create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            // Hide download link
+            downloadLink.style.display = "none";
+            // Add the link to DOM
+            document.body.appendChild(downloadLink);
+            // Click download link
+            downloadLink.click();
+        }
+        function exportTableToCSV(filename) {
+            var csv = [];
+            var rows = document.querySelectorAll("table tr");
+            
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                for (var j = 0; j < cols.length; j++) 
+                    row.push(cols[j].innerText.toString().replace(',', ' - ').replace('ñ', 'ni').replace('ó', 'o'));
+                
+                csv.push(row.join(","));        
+            }
+            // Download CSV file
+            downloadCSV(csv.join("\n"), filename);
+        }
+    </script>
+    <script>
+        function hidePlot(){
+            document.getElementById("myFunction").style.display = "none";
+            document.getElementById("hide").style.display = "none";
+            document.getElementById("show").style.display = "inline";
+        }
+        function showPlot(){
+            document.getElementById("myFunction").style.display = "inline";
+            document.getElementById("show").style.display = "none";
+            document.getElementById("hide").style.display = "inline";
+        }
+    </script>
+
+
+{% endblock %}
